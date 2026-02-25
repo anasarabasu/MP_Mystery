@@ -1,0 +1,38 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Program",
+      "request": "launch",
+      "mainClass": "Program",
+      "projectName": "MP_Mystery_Pau_f883d5e7"
+    },
+    {
+      "type": "java",
+      "name": "App",
+      "request": "launch",
+      "mainClass": "App",
+      "projectName": "MP_Mystery_Pau_f883d5e7"
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "cwd": "/home/anasa/Dropbox/Life/02 PROJECTS/Programming/MP_Mystery_Pau",
+      "program": "/home/anasa/Dropbox/Life/02 PROJECTS/Programming/MP_Mystery_Pau/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}

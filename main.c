@@ -1,184 +1,105 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-//Translations?
 
-/* 
-    C = 1, 2, 3
+/*-----------------------------
 
-    N = 0, ..., 16
+C = 1, 2, 3
 
-    M = 01 02 03 //2D array
-        11 12 13
-        21 22 23
-        31 32 33
+N = 0, ..., 16
 
-    V = 1, 0
+M = | 1, 1 | 1, 2 | 1, 3 |
+    --------------------
+    | 2, 1 | 2, 2 | 2, 3 |
+    --------------------        
+    | 3, 1 | 3, 2 | 3, 3 |
 
-    -------------------------------
+V = 1, 0
+    
+-------------------------------------------
 
-    R, B, S, T = {} EMPTY ARRAY
+Anasa's Ramblings    
 
-    -------------------------------
+- 3x3 map
+- Two players: R & B
 
-    F = ???
-    over <-> ???
-
-    -------------------------------
-
-*/
-
-// void variables() {
-//     bool good = false;
-//     bool go = true;
-//     bool start = true;
-//     bool over;
-//     bool found = false;
-
-//     int val = 0;
-
-//     int R = {};
-
-// }
-
-// void remove(int pos[]) {
-//     if(go) {
-//         // remove pos from R
-//     }
-//     else {
-//         // remove pos from B
-//     }
-
-//     // remove pos from S
-//     // remove pos from T
-// }
+The game seems to be the player trying to find a specific coordinate first?
+With the found var....
 
 
-// void expand(int pos[]) {
-//     int a = pos[0];
-//     int b = pos[1];
 
-//     int u[2] = {a - 1, b};
-//     int d[2] = {a + 1, b};
-//     int k[2] = {a, b - 1};
-//     int r[2] = {a, b  + 1};
+-----------------------------*/
 
-//     remove(pos);
 
-//     if(go) replace(u);
-//     else replace(d);
+typedef int set[9][2];
 
-//     replace(k);
-//     replace(r);
-// }
+// set M = {
+//     {1, 1}, {1, 2}, {1, 3},
+//     {2, 1}, {2, 2}, {2, 3},
+//     {3, 1}, {3, 2}, {3, 3}
+// };
 
-// void replace(int pos[]) {
-//     bool found = false;
+bool good, go, start, over, found;
+int val;
+set R;
+// , B, S, T, F;
 
-//     if(go) {
-//         if(pos == B) {
-//             // remove pos from B
-//             found = true;
-//         }
 
-//         if(pos == R) found = true;
-//         else {
-//             // add pos to R
-//             found = true;
-//         }
-//     }
-//     else {
-//         if(pos == R) {
-//             // remove pos from R
-//             found = true;
-//         }
+// void Facts() {
+// F = M - (R ∪ B)
+// Set of elements excluding the union of R & B
 
-//         if(pos == B) found = true;
-//         else // add poss to B
-//     }
+void addToSet(set SET, int[2] ELEMENT) {
+    int curLength = sizeof()
+}
 
-//     if(found) {
-//         if(pos != S) {
-//             // add pos to S
-//             found = false;
-//         }
-//         else if(pos != T) {
-//             // add pos to T
-//             expand(pos);
-//         }
-//     }
-// }
+void nexttPlayerMove(int pos[2]) {
+    // if(start) {
 
-// void update() {
-//     bool good = false;
+        // start = false;
+    // }
 
-//     if() { // S doesnt contain pos
-//         // add pos to S
-//         good = !good;
-//     }
+    if(!over) {
+        if(start) {
+            if(go) { // player R's turn
+                addToSet(R, pos);
+                addToSet(S, pos);
+                
+                good = true;
+            }
+            else { // player B's turn
+                addToSet(B, pos);
+                addToSet(S, pos);
 
-//     else if(!good &&) {// T doesnt contain pos
-//         // add pos to T
-//         expand(pos);
-//     }
-// }
+                good = true;
+            }
+        }
+        else {
 
-// void nextPlayerMove() {
-//     if(!over) {
-//         if(start) {
-//             if(go) {
-//                 // add pos to R
-//                 // add pos to S
-//                 good = true;
-//             }
-//             else {
-//                 // add pos to B
-//                 // add pos to S
-//                 good = true;
-//             }
-//         }
-//         else {
-//             if((go && /*R contains pos*/) || (!go && /*B contains pos*/)) {
-//                 update(pos);
-//                 good = true;
-//             }
-//         }
+        }
 
-//         if(good) {
-//             good = !good;
-//             go = !go;
-//             val += 1;
-//         }
-//     }
-
-//     if(start && /*len of R == 1*/ && /*len of B == 1*/) {
-//         start = false;
-//     }
-// }
-
-void gameOver() {
-    char * resultOptions = {
-        "R wins",
-        "B wins",
-        "draw"
-    };
-    int result;
-
-    if(over) {
-        if(/*len of R > len of B*/) result = 0;
-        if(/*len of R < len of B*/) result = 1
-        if(/*len of R == len of B*/) result = 2
+        if(good) { // turn switcher & counter
+            good = !good;
+            go = !gol
+            val++;
+        }
     }
-
-    printf("%s", result);
-
 }
 
 int main() {
-    int R[][2];
-    int B[][2];
+    // good = false;
+    // go = true;
+    // found = false;
+    
+    val = 0;
+    
+    start = true;
+    while(start) {
 
-    gameOver(/*R & B*/);
+        
+    }
+
+    // printf("%s", gameOver(/*R & B*/));
 
     return 0;
 }
