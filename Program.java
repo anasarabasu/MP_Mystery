@@ -19,6 +19,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.swing.Timer;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -33,17 +34,17 @@ public class Program {
 
     int val = 0;
     
+    ArrayList<int[]> R = new ArrayList<int[]>();
+    ArrayList<int[]> B = new ArrayList<int[]>();
+    ArrayList<int[]> S = new ArrayList<int[]>();
+    ArrayList<int[]> T = new ArrayList<int[]>();
+    
     int M[][] = {
         {1, 1}, {1, 2}, {1, 3},
         {2, 1}, {2, 2}, {2, 3},
         {3, 1}, {3, 2}, {3, 3}
     };
-
-    ArrayList<int[]> R = new ArrayList<int[]>();
-    ArrayList<int[]> B = new ArrayList<int[]>();
-    ArrayList<int[]> S = new ArrayList<int[]>();
-    ArrayList<int[]> T = new ArrayList<int[]>();
-    // ArrayList<int[]> F = new ArrayList<int[]>(Arrays.asList(M));
+    ArrayList<int[]> F = new ArrayList<int[]>(Arrays.asList(M));
 
     //-------------------------------------------------------------------
 
@@ -66,11 +67,7 @@ public class Program {
                 found = true;
             }
             
-            if(R.contains(pos)) {
-                System.out.println(go);
-
-                found = true;
-            }
+            if(R.contains(pos)) found = true;
             else R.add(pos);
         }
         else {
@@ -86,18 +83,20 @@ public class Program {
         }
 
         if(found) {
-            if(S.contains(pos)) {
+            if(!S.contains(pos)) {
+                S.add(pos);
+                found = false;
+            }
+            else {
                 if(!T.contains(pos)) {
                     T.add(pos);
                     expand(raw);
                 }
+                else
+                    System.out.println("T");
             }
-            else {
-                S.add(pos);
-                found = false;
-            }
-
         }
+
     }
 
     private void expand(int raw) {
@@ -115,18 +114,11 @@ public class Program {
         
         remove(pos);
         
-        // removed the if(go) condition because it doesnt seem right?
         // ensures that satisfies only this condition (pos ∈ M) 
-        // if(pos[0])
-        int u_raw[] = {pos[0]-1, pos[1]};
-        int d_raw[] = {pos[0]+1, pos[1]};
-        int k_raw[] = {pos[0], pos[1]-1};
-        int r_raw[] = {pos[0], pos[1]+1};
-
-        if(u_raw[0] > 0) replace(u, raw);
-        if(d_raw[0] < 4) replace(d, raw);
-        if(k_raw[1] > 0) replace(k, raw);
-        if(r_raw[1] < 4) replace(r, raw);
+        if(pos[0]-1 > 0) replace(u, raw);
+        if(pos[0]+1 < 4) replace(d, raw);
+        if(pos[1]-1 > 0) replace(k, raw);
+        if(pos[1]+1 < 4) replace(r, raw);
     }
 
     private void update(int raw) {
@@ -147,8 +139,6 @@ public class Program {
     }
 
     private void nextPlayerMove(int raw) {
-        // if(!over) {} removed because over is always false anyways
-        
         int[] pos = M[raw];
 
         if(start) {
@@ -183,6 +173,16 @@ public class Program {
         updateCell();
     }
 
+    private void gameOver() {
+        String result = "uwu";
+        
+        if(R.size() > B.size()) result = "R wins";
+        if(R.size() < B.size()) result = "B wins";
+        if(R.size() == B.size()) result = "Draw";
+        
+        System.out.println(result);
+    }
+    
     private boolean gameLogic() {
         /*
         over ↔ (|F| = 3 ∨ val ≥ 20 ∨ ¬start ∧ (|R| > 0 ∧ |B| = 0 ∨ |R| = 0 ∧ |B| > 0))
@@ -202,6 +202,8 @@ public class Program {
         val ≥ 20 doesnt make sense tho...? since val is only restricted to 0 - 16
         well the important vars are F and start anyways
         red herring maybe, imma remove it
+
+        uhhh so i also removed the !start
         */
 
         
@@ -209,6 +211,7 @@ public class Program {
         ArrayList<int[]> remainingBoard = new ArrayList<int[]>(Arrays.asList(M)); 
         remainingBoard.removeAll(R);
         remainingBoard.removeAll(B);
+        F = remainingBoard;
 
         int remainingBoardElements = remainingBoard.size();
         
@@ -216,53 +219,70 @@ public class Program {
         int playerR = R.size();
         int playerB = B.size();
 
-        return !(remainingBoardElements == 3 
-            || !start 
-            && ((playerR > 0 && playerB == 0) || (playerB > 0 && playerR == 0))
+        return !(remainingBoardElements <= 3 && ((playerR > 0 && playerB == 0) || (playerB > 0 && playerR == 0))
         );
     }
 
-    private void gameOver() {
-        String result = "uwu";
-
-        if(R.size() > B.size()) result = "R wins";
-        if(R.size() < B.size()) result = "B wins";
-        if(R.size() == B.size()) result = "Draw";
-
-        System.out.println(result);
-    }
-    
     //-------------------------------------------------------------------
 
     private void updateCell() {
-        int pos = 0;
-
-        
-        for(int n = 0; n != 9; n++) {
-            cells[n].setBackground(Color.WHITE);
-            cells[n].setText("");
-
-            if(!R.isEmpty()) {
-                for(int[] element : R) {
-                    pos = ((element[0]-1) *3) + (element[1]-1); // translates coordinate format to raw num
-                    if(pos >= 0 && pos <= 8) cells[pos].setBackground(Color.RED);
-                }
-            }
-
-            if(!B.isEmpty()) {
-                for(int[] element : B) {
-                    pos = ((element[0]-1) *3) + (element[1]-1); // translates coordinate format to raw num
-                    if(pos >= 0 && pos <= 8) cells[pos].setBackground(Color.BLACK);
-                }
-            }
+        for (int[] element : F) {
+            // translates coordinate format to raw num
+            int pos = ((element[0]-1) *3) + (element[1]-1); 
             
-            if(!S.isEmpty()) {
-                for(int[] element : S) {
-                    pos = ((element[0]-1) *3) + (element[1]-1); // translates coordinate format to raw num
-                    if(pos >= 0 && pos <= 8) cells[pos].setText("S");
-                }
+            if(pos >= 0 && pos <= 8) {
+                cells[pos].setBackground(Color.WHITE);
+                cells[pos].setText("");
+
+                if(!start) cells[pos].setEnabled(false);
             }
         }
+
+        Timer timer = new Timer(75, null);
+        ActionListener update = new ActionListener() {
+            int x = 0;
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int pos;
+
+                if(x < R.size()) {
+                    pos = ((R.get(x)[0]-1) *3) + (R.get(x)[1]-1); 
+                    if(pos >= 0 && pos <= 8) cells[pos].setBackground(Color.RED);
+
+                    if(go) cells[pos].setEnabled(true);
+                    else cells[pos].setEnabled(false);
+                }
+                
+                if(x < B.size()) {
+                    pos = ((B.get(x)[0]-1) *3) + (B.get(x)[1]-1);
+                    if(pos >= 0 && pos <= 8) cells[pos].setBackground(Color.BLACK);
+
+                    if(!go) cells[pos].setEnabled(true);
+                    else cells[pos].setEnabled(false);
+                }
+
+                if(!S.isEmpty()) {
+                    if(x < S.size()) {
+                        pos = ((S.get(x)[0]-1) *3) + (S.get(x)[1]-1);
+                        if((pos >= 0 && pos <= 8) && !(T.contains(S.get(x)))) 
+                            cells[pos].setText("Second");
+                    }
+                }
+
+                if(!T.isEmpty()) {
+                    if(x < T.size()) {
+                        pos = ((T.get(x)[0]-1) *3) + (T.get(x)[1]-1); 
+                        if(pos >= 0 && pos <= 8) cells[pos].setText("Third");
+                    }
+                }
+                
+                x++;
+            }
+        };
+
+        timer.addActionListener(update);
+        timer.start();
     }
 
     //-------------------------------------------------------------------
@@ -295,7 +315,7 @@ public class Program {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         String title = "Mystery Game";
         JFrame frame = new JFrame(title);
 
@@ -319,14 +339,17 @@ public class Program {
         
         program.loadGrid();
 
-        boolean isRunning = program.gameLogic();
-        while (isRunning) {
-            isRunning = program.gameLogic();
-        }
+        boolean isRunning = true;
+        while (isRunning = program.gameLogic());
 
         if(!isRunning) {
             program.gameOver();
-            // frame.dispose();
+
+            for (JButton button : program.cells) {
+                button.setEnabled(false);
+                Thread.sleep(10000);
+                frame.dispose();
+            }
         }
     }
     
